@@ -1,0 +1,25 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": "8080"
+  },
+  "postgres": {
+    "driver": "postgres",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "user": "user",
+    "password": "password",
+    "dbName": "hezzl",
+    "sslMode": "disable"
+  },
+  "redis": {
+    "host": "127.0.0.1",
+    "port": "6379",
+    "password": "password",
+    "name": 1
+  }
+
+
+
+}
+
