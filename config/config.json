@@ -12,13 +12,27 @@
     "dbName": "hezzl",
     "sslMode": "disable"
   },
+
+  "clickhouse": {
+    "driver": "clickhouse",
+    "host": "127.0.0.1",
+    "port": "8123",
+    "user": "default",
+    "password": "",
+    "dbName": "hezzl"
+  },
+
   "redis": {
     "host": "127.0.0.1",
     "port": "6379",
     "password": "password",
     "name": 1
-  }
+  },
 
+  "nats": {
+    "host": "nats://127.0.0.1",
+    "port": "4222"
+  }
 
 
 }

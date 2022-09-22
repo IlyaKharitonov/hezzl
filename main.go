@@ -4,8 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"hezzlTestTask/config"
-	"hezzlTestTask/internal/app"
+	"hezzlTestTask/internal"
 )
 
 func main() {
@@ -13,9 +12,10 @@ func main() {
 	flag.StringVar(&pathConfig, "config", "config/config.json", "")
 	flag.Parse()
 
-	if config.Parse(pathConfig) != nil {
+	config, err := internal.Parse(pathConfig)
+	if err != nil {
 		log.Fatalln("config not found")
 	}
 
-	app.Start(&config.Config)
+	internal.Start(config)
 }
