@@ -5,7 +5,7 @@
   },
   "postgres": {
     "driver": "postgres",
-    "host": "127.0.0.1",
+    "host": "172.17.0.1",
     "port": "5432",
     "user": "user",
     "password": "password",
@@ -15,22 +15,22 @@
 
   "clickhouse": {
     "driver": "clickhouse",
-    "host": "127.0.0.1",
-    "port": "8123",
+    "host": "clickhouse",
+    "port": "9000",
     "user": "default",
     "password": "",
     "dbName": "default"
   },
 
   "redis": {
-    "host": "127.0.0.1",
+    "host": "redis",
     "port": "6379",
-    "password": "password",
-    "name": 1
+    "password": "",
+    "name": 0
   },
 
   "nats": {
-    "host": "nats://127.0.0.1",
+    "host": "nats",
     "port": "4222"
   }
 

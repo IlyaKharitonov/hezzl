@@ -12,7 +12,11 @@ import (
 )
 
 func (dbc *DBConfig) ConnectPostgres(ctx context.Context) (*pgx.Conn, error) {
-	db, err := pgx.Connect(ctx, dbc.genConnStr())
+	//db, err := pgx.Connect(ctx, dbc.genConnStr())
+	//"172.17.0.1" c ним из контенера сервера цепляется в базе
+	db, err := pgx.Connect(ctx, fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
+		dbc.Host, dbc.Port, dbc.User, dbc.Password, dbc.DBName))
+
 	if err != nil {
 		return nil, fmt.Errorf("(dbc *DBConfig)ConnectPostgres #1 \n Error:%s \n", err.Error())
 	}
@@ -50,13 +54,11 @@ func (dbc *DBConfig) ConnectClickHous() *ch.Conn {
 func (dbc *DBConfig) genConnStr() string {
 	switch dbc.Driver {
 	case Postgres:
-		return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		return fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
 			dbc.User,
 			dbc.Password,
 			dbc.Host,
-			dbc.Port,
-			dbc.DBName,
-			dbc.SSLmode)
+			dbc.Port)
 	case ClickHouse:
 		return fmt.Sprintf(
 			"%s://%s:%s?username=%s&password=%s&database=%s&debug=%s",

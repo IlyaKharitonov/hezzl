@@ -1,4 +1,4 @@
-create table logs
+create table IF NOT EXISTS logs
 (
     time    DateTime default now(),
     message String

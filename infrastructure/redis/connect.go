@@ -1,7 +1,6 @@
 package redis
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/go-redis/redis"
@@ -14,9 +13,13 @@ func (r *RedisConfig) Connect() (*redis.Client, error) {
 		DB:       r.NameDB,
 	})
 
-	pong, err := client.Ping().Result()
-	if err == nil && pong != "PONG" || err != nil {
-		return nil, errors.New("No connect redis")
+	_, err := client.Ping().Result()
+	if err != nil{
+		return nil, err
 	}
+	//if err == nil && pong != "PONG"{
+	//	return nil, errors.New("No connect redis")
+	//}
+
 	return client, nil
 }

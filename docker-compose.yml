@@ -5,34 +5,51 @@ services:
     db:
         image: postgres:14.5
         container_name: postgreshezzl
+        restart: always
         environment:
             - POSTGRES_USER=user
             - POSTGRES_PASSWORD=password
             - POSTGRES_DB=hezzl
         volumes:
-            - ./infrastructure/databases/initPg/init.sql:/docker-entrypoint-initdb.d/init.sql
+            - ./scripts/initPg/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+#            - ./scripts/initPg/init.sql:/docker-entrypoint-initdb.d/init.sql
         ports:
             - "5432:5432"
+        networks:
+            - hezzlnetwork
 
     redis:
         image: redis:7.0.4
+        restart: always
         container_name: redishezzl
+#        command: ["redis-server", "--bind", "redis", "--port", "6379"]
         ports:
             - "6379:6379"
+        networks:
+            - hezzlnetwork
 
     clickhouse:
-        image: yandex/clickhouse-server:20.3
+        image: yandex/clickhouse-server
         container_name: clickhousehezzl
+        restart: always
+#        environment:
+#            - ALLOW_EMPTY_PASSWORD=yes
         volumes:
-            - ./infrastructure/databases/initCh/init.sql:/docker-entrypoint-initdb.d/init.sql
+            - ./scripts/initCh/init.sql:/docker-entrypoint-initdb.d/init.sql
+#            - ./scripts/initCh/structure.sql:/root/structure.sql
         ports:
             - "8123:8123"
+        networks:
+            - hezzlnetwork
 
     nats:
         image: nats:2.9
         container_name: natshezzl
+        restart: always
         ports:
             - "4222:4222"
+        networks:
+            - hezzlnetwork
 
     server:
         build: .
@@ -48,8 +65,13 @@ services:
             - nats
         ports:
             - "8080:8080"
-        
-        
+        networks:
+            - hezzlnetwork
+
+networks:
+    hezzlnetwork:
+        driver: bridge
+
         
         
         
