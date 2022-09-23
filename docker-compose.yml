@@ -1,0 +1,55 @@
+version: '3.3'
+
+services:
+
+    db:
+        image: postgres:14.5
+        container_name: postgreshezzl
+        environment:
+            - POSTGRES_USER=user
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=hezzl
+        volumes:
+            - ./infrastructure/databases/initPg/init.sql:/docker-entrypoint-initdb.d/init.sql
+        ports:
+            - "5432:5432"
+
+    redis:
+        image: redis:7.0.4
+        container_name: redishezzl
+        ports:
+            - "6379:6379"
+
+    clickhouse:
+        image: yandex/clickhouse-server:20.3
+        container_name: clickhousehezzl
+        volumes:
+            - ./infrastructure/databases/initCh/init.sql:/docker-entrypoint-initdb.d/init.sql
+        ports:
+            - "8123:8123"
+
+    nats:
+        image: nats:2.9
+        container_name: natshezzl
+        ports:
+            - "4222:4222"
+
+    server:
+        build: .
+#            context: .
+#        command:
+#            - ./hezzl
+#            context: .
+        restart: always
+        depends_on:
+            - db
+            - clickhouse
+            - redis
+            - nats
+        ports:
+            - "8080:8080"
+        
+        
+        
+        
+        
