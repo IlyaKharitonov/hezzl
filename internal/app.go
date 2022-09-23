@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	_ "github.com/lib/pq"
-	"github.com/nats-io/nats.go"
 
+	"hezzlTestTask/infrastructure/natsBroker"
 	"hezzlTestTask/internal/controllers/itemController"
 	"hezzlTestTask/internal/services/itemService"
 )
@@ -21,10 +21,10 @@ func Start(c *ConfigJSON) error {
 	}
 	log.Println("postgres connected")
 
-	//clickHouse, err := c.ClickHouse.ConnectClickHous()
-	//if err != nil{
-	//	log.Fatalf("Start #2 \nError: %s \n", err.Error())
-	//}
+	clickHouse := c.ClickHouse.ConnectClickHous()
+	if err != nil{
+		log.Fatalf("Start #2 \nError: %s \n", err.Error())
+	}
 
 	redis, err := c.Redis.Connect()
 	if err != nil {
@@ -32,26 +32,26 @@ func Start(c *ConfigJSON) error {
 	}
 	log.Println("redis connected")
 
-	nats, err := nats.Connect(nats.DefaultURL)
+	nats, err := c.Nats.Connect()
 	if err != nil {
 		log.Fatalf("Start #3 \nError: %s \n", err.Error())
 	}
 	log.Println("nats connected")
-	broker := itemService.NewNatsBroker(nats)
+
+	reader := natsBroker.NewReader(nats, clickHouse)
+	err = reader.Read()
+	if err != nil {
+		log.Fatalf("Start #4 \nError: %s \n", err.Error())
+	}
 
 	item := itemService.NewItem(
 		itemService.NewPostgresDB(postgres),
 		itemService.NewRedisCache(redis),
-		broker,
-		itemService.NewClickHouseDB(nil))
+		itemService.NewNatsSender(nats))
 
 	itemController.HandlersRegister(itemController.NewController(item))
 	log.Println("item handlers registration done")
 
-	go func() {
-		broker.Read()
-
-	}()
 
 	log.Println("start server")
 	err = http.ListenAndServe(fmt.Sprintf("%s:%s", c.Server.Host, c.Server.Port), nil)

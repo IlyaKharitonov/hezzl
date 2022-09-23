@@ -12,11 +12,11 @@ type postgresDB struct {
 	*pgx.Conn
 }
 
-func NewPostgresDB(conn *pgx.Conn) postgresDB {
-	return postgresDB{conn}
+func NewPostgresDB(conn *pgx.Conn) *postgresDB {
+	return &postgresDB{conn}
 }
 
-func (pdb postgresDB) Create(ctx context.Context, item *Item) (*Item, error) {
+func (pdb *postgresDB) Create(ctx context.Context, item *Item) (*Item, error) {
 
 	row, err := pdb.Query(ctx, `
 INSERT INTO items 
@@ -67,7 +67,7 @@ WHERE id = $1`,
 	return item, nil
 }
 
-func (pdb postgresDB) GetList(ctx context.Context) ([]*Item, error) {
+func (pdb *postgresDB) GetList(ctx context.Context) ([]*Item, error) {
 	var items = make([]*Item, 0)
 
 	rows, err := pdb.Query(ctx, `
@@ -102,7 +102,7 @@ FROM items`)
 
 }
 
-func (pdb postgresDB) Update(ctx context.Context, item *Item) (*Item, error) {
+func (pdb *postgresDB) Update(ctx context.Context, item *Item) (*Item, error) {
 	args := make([]interface{}, 0)
 
 	updateStr := "UPDATE items SET name = $1 "
@@ -164,7 +164,7 @@ WHERE id = $1`,
 	return item, nil
 }
 
-func (pdb postgresDB) Delete(ctx context.Context, item *Item) (*Item, error) {
+func (pdb *postgresDB) Delete(ctx context.Context, item *Item) (*Item, error) {
 	tx, err := pdb.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.Serializable})
 	if err != nil {
 		return nil, fmt.Errorf("(pdb *postgresDB)Delete #1 \n Error:%s \n", err.Error())

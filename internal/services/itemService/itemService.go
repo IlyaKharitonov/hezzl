@@ -2,6 +2,7 @@ package itemService
 
 import (
 	"context"
+	//"database/sql"
 	"fmt"
 	"time"
 
@@ -37,21 +38,19 @@ type (
 		Delete(key string) error
 	}
 
-	broker interface {
-		Send(log string)
-		Read()
+	sender interface {
+		Send(log string)error
 	}
 
 	itemService struct {
 		cache     cache
 		db        db
-		broker    broker
-		statistic statistic
+		sender 	  sender
 	}
 )
 
-func NewItem(db postgresDB, cache cache, broker broker, statistic statistic) *itemService {
-	return &itemService{cache: cache, db: db, broker: broker, statistic: statistic}
+func NewItem(db *postgresDB, cache *redisCache, sender *natsSender) *itemService {
+	return &itemService{cache: cache, db: db, sender: sender}
 }
 
 func (is *itemService) Create(ctx context.Context, item *Item) (*Item, error) {
@@ -60,6 +59,10 @@ func (is *itemService) Create(ctx context.Context, item *Item) (*Item, error) {
 		return nil, fmt.Errorf("(is *itemService)Create #1 \n Error:%s \n", err.Error())
 	}
 
+	err = is.sender.Send(fmt.Sprintf("created item"))
+	if err != nil {
+		return nil, fmt.Errorf("(is *itemService)Create #2 \n Error:%s \n", err.Error())
+	}
 	return item, nil
 }
 
@@ -99,6 +102,11 @@ func (is *itemService) Update(ctx context.Context, item *Item) (*Item, error) {
 		return nil, fmt.Errorf("(is *itemService)Update #2 \n Error:%s \n", err.Error())
 	}
 
+	err = is.sender.Send(fmt.Sprintf("update item"))
+	if err != nil {
+		return nil, fmt.Errorf("(is *itemService)Update #3 \n Error:%s \n", err.Error())
+	}
+
 	return item, nil
 }
 
@@ -112,6 +120,10 @@ func (is *itemService) Delete(ctx context.Context, item *Item) (*Item, error) {
 		return nil, fmt.Errorf("(is *itemService)Delete #2 \n Error:%s \n", err.Error())
 	}
 
+	err = is.sender.Send(fmt.Sprintf("delete item"))
+	if err != nil {
+		return nil, fmt.Errorf("(is *itemService)Delete #3 \n Error:%s \n", err.Error())
+	}
 	return item, nil
 }
 

@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 
 	"hezzlTestTask/infrastructure/databases"
-	"hezzlTestTask/infrastructure/nats"
+	"hezzlTestTask/infrastructure/natsBroker"
 	"hezzlTestTask/infrastructure/redis"
 )
 
@@ -13,8 +13,8 @@ type ConfigJSON struct {
 	Server     Server             `json:"server"`
 	Postgres   databases.DBConfig `json:"postgres"`
 	ClickHouse databases.DBConfig `json:"clickHouse"`
-	Redis      redis.RedisConfig  `json:"redis"`
-	Nats       nats.NatsConfig    `json:"nats"`
+	Redis redis.RedisConfig     `json:"redis"`
+	Nats  natsBroker.NatsConfig `json:"nats"`
 }
 
 type Server struct {

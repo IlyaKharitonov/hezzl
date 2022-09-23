@@ -19,7 +19,7 @@
     "port": "8123",
     "user": "default",
     "password": "",
-    "dbName": "hezzl"
+    "dbName": "default"
   },
 
   "redis": {

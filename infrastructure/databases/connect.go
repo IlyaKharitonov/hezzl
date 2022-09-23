@@ -2,9 +2,12 @@ package databases
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 
+	//"github.com/ClickHouse/clickhouse-go/v2"
+	ch "github.com/leprosus/golang-clickhouse"
+	//"github.com/ClickHouse/clickhouse-go/v2"
+	//"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 	"github.com/jackc/pgx/v4"
 )
 
@@ -21,17 +24,27 @@ func (dbc *DBConfig) ConnectPostgres(ctx context.Context) (*pgx.Conn, error) {
 	return db, nil
 }
 
-func (dbc *DBConfig) ConnectClickHous() (*sql.DB, error) {
-	db, err := sql.Open("clickhouse", dbc.genConnStr())
-	if err != nil {
-		return nil, fmt.Errorf("(dbc *DBConfig)ConnectClickHous #1 \n Error:%s \n", err.Error())
-	}
+func (dbc *DBConfig) ConnectClickHous() *ch.Conn {
+	//db, err := clickhouse.Open(&clickhouse.Options{
+	//	Addr: []string{"127.0.0.1:8123"},
+	//	Auth: clickhouse.Auth{
+	//		Database: "default",
+	//		Username: "default",
+	//		Password: "password",
+	//	},
+	//})
+	db := ch.New("127.0.0.1", 8123, "default", "")
 
-	if err = db.Ping(); err != nil {
-		return nil, fmt.Errorf("(dbc *DBConfig)ConnectClickHous #2 \n Error:%s \n", err.Error())
-	}
+	//
+	//if err != nil {
+	//	return nil, fmt.Errorf("(dbc *DBConfig)ConnectClickHous #1 \n Error:%s \n", err.Error())
+	//}
 
-	return db, nil
+	//if err = db.Ping(context.Background()); err != nil {
+	//	return nil, fmt.Errorf("(dbc *DBConfig)ConnectClickHous #2 \n Error:%s \n", err.Error())
+	//}
+
+	return db
 }
 
 func (dbc *DBConfig) genConnStr() string {
@@ -46,7 +59,8 @@ func (dbc *DBConfig) genConnStr() string {
 			dbc.SSLmode)
 	case ClickHouse:
 		return fmt.Sprintf(
-			"tcp://%s:%s?username=%s&password=%s&database=%s&debug=%s",
+			"%s://%s:%s?username=%s&password=%s&database=%s&debug=%s",
+			dbc.Driver,
 			dbc.Host,
 			dbc.Port,
 			dbc.User,
