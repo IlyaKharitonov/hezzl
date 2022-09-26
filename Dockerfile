@@ -4,7 +4,7 @@ WORKDIR /app
 
 ADD . /app
 
-CMD ["./hezzl"]
+#CMD "./hezzl"
 
 EXPOSE 8080 8080
 

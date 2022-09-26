@@ -3,7 +3,6 @@ package itemController
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -31,7 +30,6 @@ func NewController(is ItemService) *controller {
 }
 
 func (c *controller) Create(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("Я тут")
 	if req.Method != http.MethodPost {
 		w.WriteHeader(http.StatusNotFound)
 		return
