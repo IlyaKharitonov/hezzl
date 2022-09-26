@@ -16,7 +16,7 @@
   "clickhouse": {
     "driver": "clickhouse",
     "host": "clickhouse",
-    "port": "9000",
+    "port": "8123",
     "user": "default",
     "password": "",
     "dbName": "default"

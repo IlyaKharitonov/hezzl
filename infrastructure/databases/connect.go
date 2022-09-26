@@ -14,7 +14,7 @@ import (
 func (dbc *DBConfig) ConnectPostgres(ctx context.Context) (*pgx.Conn, error) {
 	//db, err := pgx.Connect(ctx, dbc.genConnStr())
 	//"172.17.0.1" c ним из контенера сервера цепляется в базе
-	db, err := pgx.Connect(ctx, fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
+	db, err := pgx.Connect(ctx, fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 		dbc.Host, dbc.Port, dbc.User, dbc.Password, dbc.DBName))
 
 	if err != nil {

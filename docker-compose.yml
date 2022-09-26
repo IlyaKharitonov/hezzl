@@ -11,8 +11,8 @@ services:
             - POSTGRES_PASSWORD=password
             - POSTGRES_DB=hezzl
         volumes:
-            - ./scripts/initPg/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
-#            - ./scripts/initPg/init.sql:/docker-entrypoint-initdb.d/init.sql
+#            - ./scripts/initPg/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+            - ./scripts/initPg/init.sql:/docker-entrypoint-initdb.d/init.sql
         ports:
             - "5432:5432"
         networks:
